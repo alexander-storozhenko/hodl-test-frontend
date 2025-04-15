@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {ChevronLeft, Copy} from "lucide-react";
+import {ChevronLeft} from "lucide-react";
 import {useWatch} from "react-hook-form";
 import {post} from "@/helpers/urlHelper.ts";
 import {shortAddress} from "@/helpers/address-helper.ts";

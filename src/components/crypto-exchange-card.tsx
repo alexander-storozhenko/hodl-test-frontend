@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react"
 
 import {useQuery} from "@tanstack/react-query";
 
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
+import {Card} from "@/components/ui/card"
 import {get} from "@/helpers/urlHelper.ts";
 import ConvertStep from "@/components/crypto-exchange-steps/convert-step.tsx";
 import CheckoutStep from "@/components/crypto-exchange-steps/checkout-step.tsx";
@@ -10,12 +10,6 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import SuccessStep from "@/components/crypto-exchange-steps/success-step.tsx";
-
-const cryptoData = {
-    USDT: {price: 1, name: "USDT"},
-    BTC: {price: 67890.42, name: "Bitcoin"},
-}
-
 
 // ....................................................................................
 
@@ -92,7 +86,6 @@ export default function CryptoExchangeCard() {
         />,
         <SuccessStep response={response}/>
     ]
-
 
     return (
         <Card className="w-full max-w-md mx-auto">

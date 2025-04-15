@@ -1,27 +1,24 @@
-import React, {useState} from 'react';
-import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import React from 'react';
+import {CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {ArrowRight} from "lucide-react";
-import {z} from "zod";
 
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import {useForm, useWatch} from "react-hook-form";
+import {useWatch} from "react-hook-form";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 
 
-const ConvertStep = ({data, form, networkFee, exchangeFee, handleNext}) => {
+const ConvertStep = ({data, form, networkFee, handleNext}) => {
     const exchangeRate = data?.price ? parseFloat(data?.price)?.toFixed(2) : 0
 
     const recipientAddress = useWatch({
