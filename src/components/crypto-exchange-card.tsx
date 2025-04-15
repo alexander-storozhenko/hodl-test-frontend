@@ -70,7 +70,7 @@ export default function CryptoExchangeCard() {
 
     useEffect(() => {
         setInterval(() => {
-            // refetch()
+            refetch()
         }, 3000)
     }, [refetch]);
 
