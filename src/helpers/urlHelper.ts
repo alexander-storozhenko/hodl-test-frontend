@@ -1,86 +1,183 @@
-import {router} from "../main.tsx";
+const domain = 'http://localhost:9292'
+const apiDomain = "";
+const defaultHeaders = {
+    "Content-Type": "application/json",
+    // "Access-Control-Allow-Origin": "http://localhost:9292",
+    // "Access-Control-Allow-Credentials": true
+};
 
-export const getUrlPaths = (pathname) => {
-    const paths = pathname.split('/')
-
-    if (paths.length && !paths[0].length) paths.shift()
-
-    return paths
-}
-
-export const getAllUrlKeys = (prefix, params) => {
-    const res = []
-    for (const key of params.keys()) {
-        if (key.includes('#') && key.split('#')[0] !== prefix) continue;
-
-        if (key.includes('#')) {
-            // delete prefix
-            const tmp = key.split('#')
-            tmp.shift()
-            res.push(tmp.join(''))
-
-            continue
-        }
-        res.push(key)
-    }
-    return res
-}
-
-export function parseBreadcrumbs(items) {
-    console.log(items)
-    const seenCombination = {};
-    let firstRouter = null
-    let result = [];
-    let newItems = [];
-
-    for (let item of items) {
-        const combinationKey = `${item.router}-${item.page}`;
-
-        if (!(combinationKey in seenCombination)) {
-            if (firstRouter === null) {
-                firstRouter = item.router;
-                result.push({
-                    name: item.router_name,
-                    link: `/${item.router}`
-                });
-            }
-
-            result.push({
-                name: item.page_name,
-                link: `/${item.router}/${item.page}`
-            });
-            newItems.push(item);
-            seenCombination[combinationKey] = result.length;
-        } else {
-            let sliceIndex = seenCombination[combinationKey];
-            result = result.slice(0, sliceIndex);
-            newItems = newItems.slice(0, sliceIndex - 1);
-            return [result, newItems];
-        }
-    }
-
-    return [result, newItems];
-}
-
-export const isAuthLocation = () => window.location.pathname === '/auth'
-export const isRootLocation = () => window.location.pathname === '/'
-
-export const addUrlParams = (key, value) => {
-    router.navigate({
-        search: (old) => ({
-            ...old,
-            [key]: value
-        })
+export const get = async (path, headers = {}, params = {}) => {
+    const res = await fetch(`${domain}/${path}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {...defaultHeaders, ...headers},
+        ...params,
     });
-}
 
-export const removeUrlParam = (key) => {
-    router.navigate({
-        search: (old) => {
-            const tmp = {...old}
-            if (tmp[key]) delete tmp[key]
+    return checkResult(res);
+};
 
-            return tmp
-        }
+export const getApi = async (path, headers = {}, params = {}) => {
+    return await fetch(`${apiDomain}/${path}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {...defaultHeaders, ...headers},
+        ...params,
     });
-}
+};
+
+export const postFormApi = async (path, formData) => {
+    try {
+        const res = await fetch(`${apiDomain}/${path}`, {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        });
+        return checkResult(res);
+    } catch (e) {
+        throw new Error(e);
+    }
+};
+
+
+export const patch = async (path, body, headers = {}) => {
+    const res = await fetch(`${domain}/${path}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {...defaultHeaders, ...headers},
+        body: JSON.stringify(body),
+    });
+
+    return checkResult(res);
+};
+
+export const patchForm = async (path, formData) => {
+    try {
+        const res = await fetch(`${domain}/${path}`, {
+            method: "PATCH",
+            credentials: "include",
+            body: formData,
+        });
+        return checkResult(res);
+    } catch (e) {
+        throw new Error(e);
+    }
+};
+
+export const put = async (path, body, headers = {}) => {
+    const res = await fetch(`${domain}/${path}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {...defaultHeaders, ...headers},
+        body: JSON.stringify(body),
+    });
+
+    return checkResult(res);
+};
+
+export const putForm = async (path, form, headers = {}) => {
+    const res = await fetch(`${domain}/${path}`, {
+        method: "PUT",
+        credentials: "include",
+        body: form,
+    });
+
+    return checkResult(res);
+};
+
+
+export const options = async (path, body, headers = {}) => {
+    const res = await fetch(`${domain}/${path}`, {
+        method: "OPTIONS",
+        credentials: "include",
+        headers: {...defaultHeaders, ...headers},
+        body: JSON.stringify(body),
+    });
+
+    return checkResult(res);
+};
+
+export const post = async (path, body, headers = {}) => {
+    try {
+        const res = await fetch(`${domain}/${path}`, {
+            method: "POST",
+            credentials: "include",
+            headers: {...defaultHeaders, ...headers},
+            body: JSON.stringify(body),
+        });
+        return checkResult(res);
+    } catch (e) {
+        throw new Error(e);
+    }
+
+};
+
+export const postForm = async (path, formData) => {
+    try {
+        const res = await fetch(`${domain}/${path}`, {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        });
+        return checkResult(res);
+    } catch (e) {
+        throw new Error(e);
+    }
+};
+
+export const delete_ = async (path, body, headers = {}) => {
+    try {
+        const res = await fetch(`${domain}/${path}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {...defaultHeaders, ...headers},
+            body: JSON.stringify(body),
+        });
+        return checkResult(res);
+    } catch (e) {
+        throw new Error(e);
+    }
+};
+
+export const deleteFile = async (path, body, headers = {}) => {
+    try {
+        const res = await fetch(`${domain}/${path}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {...defaultHeaders, ...headers},
+            body: JSON.stringify(body),
+        });
+        return checkFileResult(res);
+    } catch (e) {
+        throw new Error(e);
+    }
+};
+
+const checkResult = async (res) => {
+    const data = await res.json();
+
+    if (!res.ok) {
+        const detail = Array.isArray(data.detail)
+            ? data.detail[0].msg
+            : data.detail || "Unknown error";
+
+        throw {status: data.status, detail};
+    }
+
+    return data;
+};
+
+const checkFileResult = async (res) => {
+    const data = await res.blob();
+
+    if (!res.ok) {
+        const detail = Array.isArray(data.detail)
+            ? data.detail[0].msg
+            : data.detail || "Unknown error";
+
+        throw {status: data.status, detail};
+    }
+
+    return data;
+};
+
